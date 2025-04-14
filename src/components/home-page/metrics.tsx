@@ -1,10 +1,12 @@
 import { useState } from "react"
 import { Flame, Lightbulb, LineChart } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
 export function Metrics() {
+    const navigate = useNavigate()
     const [metrics, setMetrics] = useState<{
         streak: number,
         weeklyScore: number,
@@ -15,8 +17,15 @@ export function Metrics() {
         concepts: 27
     })
 
+  const handleMetricsClick = () => {
+    navigate('/performance')
+  }
+
   return (
-    <Card className="p-6">
+    <Card 
+      className="p-6 cursor-pointer hover:bg-gray-50 transition-colors" 
+      onClick={handleMetricsClick}
+    >
       <CardContent className="flex items-start justify-between p-0">
         <div className="flex flex-col items-center gap-2 px-4">
           <Flame className="h-8 w-8 text-chart-1" />
