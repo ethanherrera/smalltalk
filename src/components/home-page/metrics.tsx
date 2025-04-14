@@ -1,0 +1,45 @@
+import { useState } from "react"
+import { Flame, Lightbulb, LineChart } from "lucide-react"
+
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+
+export function Metrics() {
+    const [metrics, setMetrics] = useState<{
+        streak: number,
+        weeklyScore: number,
+        concepts: number
+    }>({
+        streak: 5,
+        weeklyScore: 69,
+        concepts: 27
+    })
+
+  return (
+    <Card className="p-6">
+      <CardContent className="flex items-start justify-between p-0">
+        <div className="flex flex-col items-center gap-2 px-4">
+          <Flame className="h-8 w-8 text-chart-1" />
+          <span className="text-xs font-small">{metrics.streak} days</span>
+          <span className="text-xs font-bold">Streak</span>
+        </div>
+        
+        <Separator orientation="vertical" className="h-16" />
+        
+        <div className="flex flex-col items-center gap-2 px-4">
+          <LineChart className="h-8 w-8 text-chart-2" />
+          <span className="text-xs font-small">{metrics.weeklyScore}/100</span>
+          <span className="text-xs font-bold">Weekly Score</span>
+        </div>
+        
+        <Separator orientation="vertical" className="h-16" />
+        
+        <div className="flex flex-col items-center gap-2 px-4">
+          <Lightbulb className="h-8 w-8 text-chart-3" />
+          <span className="text-xs font-small">{metrics.concepts}</span>
+            <span className="text-xs font-bold">Concepts</span>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
