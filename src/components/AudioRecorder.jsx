@@ -81,7 +81,7 @@ function AudioRecorder({ onStart, onStop, isRecording }) {
           aria-label="Stop recording"
         >
           <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
-            <div className="w-6 h-6 bg-white rounded-sm"></div>
+            <div className="w-6 h-6 bg-white rounded-xs"></div>
           </div>
         </button>
       ) : (

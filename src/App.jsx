@@ -15,7 +15,7 @@ function App() {
       <Router>
         <div className="flex flex-col min-h-screen bg-white">
           <Header />
-          <main className="flex-grow">
+          <main className="grow">
             <Routes>
               <Route path="/" element={<Navigate replace to="/record" />} />
               <Route path="/record" element={<RecordScreen />} />

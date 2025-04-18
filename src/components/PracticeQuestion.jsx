@@ -57,7 +57,7 @@ function PracticeQuestion({ question, showResult, onAnswer, onNext, isLastQuesti
             
             {showResult && index === selectedOption && (
               <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                <div className="w-6 h-6 border-2 border-black rounded">
+                <div className="w-6 h-6 border-2 border-black rounded-sm">
                   {index === question.correctAnswer && (
                     <div className="w-4 h-4 bg-black m-[2px]"></div>
                   )}

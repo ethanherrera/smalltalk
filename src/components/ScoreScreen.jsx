@@ -21,7 +21,7 @@ function ScoreScreen() {
         
         {/* Performance Summary */}
         <h2 className="font-bold text-[#111111] mb-4">Summary of performance</h2>
-        <div className="border border-[#D9D9D9] rounded p-4 h-[405px] mb-8">
+        <div className="border border-[#D9D9D9] rounded-sm p-4 h-[405px] mb-8">
           <p className="italic text-gray-800">
             placeholder for graphs and word descriptions that summarize how users perormed in the Ai generated quiz
           </p>

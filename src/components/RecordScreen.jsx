@@ -65,7 +65,7 @@ function RecordScreen() {
 
   return (
     <div className="flex flex-col items-center px-4 pt-6">
-      <div className="w-full max-w-md h-[673px] border border-[#D9D9D9] rounded p-4 overflow-y-auto">
+      <div className="w-full max-w-md h-[673px] border border-[#D9D9D9] rounded-sm p-4 overflow-y-auto">
         <p className="italic text-[#111111] whitespace-pre-line">
           {transcript}
         </p>
