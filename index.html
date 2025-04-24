@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      window.addEventListener('error', function(e) {
+        console.error('Error logged from error event listener:', e.message, e);
+      });
+      console.error = (function(originalConsoleError) {
+        return function() {
+          originalConsoleError.apply(console, arguments);
+          const errorElement = document.createElement('div');
+          errorElement.style.position = 'fixed';
+          errorElement.style.bottom = '10px';
+          errorElement.style.left = '10px';
+          errorElement.style.right = '10px';
+          errorElement.style.backgroundColor = 'rgba(255,0,0,0.8)';
+          errorElement.style.color = 'white';
+          errorElement.style.padding = '10px';
+          errorElement.style.zIndex = '9999';
+          errorElement.style.fontSize = '14px';
+          errorElement.style.fontFamily = 'monospace';
+          errorElement.style.borderRadius = '4px';
+          errorElement.textContent = Array.from(arguments).join(' ');
+          document.body.appendChild(errorElement);
+          setTimeout(() => document.body.removeChild(errorElement), 5000);
+        };
+      })(console.error);
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
