@@ -1,7 +1,8 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 interface DailyPracticeItem {
   title?: string;
   time?: number;
@@ -25,8 +26,14 @@ const defaultDailyPracticeItems = [
   ];
 
 const DailyPracticeCard: React.FC<DailyPracticeCardProps> = ({ title="", time=0 }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate('/practice');
+  };
+  
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 cursor-pointer" onClick={handleClick}>
       <div className="flex items-center justify-between px-6 py-3">
         <div>
           <CardTitle className="text-base">{title}</CardTitle>
@@ -39,9 +46,14 @@ const DailyPracticeCard: React.FC<DailyPracticeCardProps> = ({ title="", time=0 
 };
 
 const DailyPractice: React.FC<DailyPracticeProps> = ({ dailyPracticeItems = defaultDailyPracticeItems }) => {
+  const navigate = useNavigate();
   // Only show first two items
   const displayedItems = dailyPracticeItems.slice(0, 2);
   const hasMoreItems = dailyPracticeItems.length > 2;
+
+  const handleViewAll = () => {
+    navigate('/practice');
+  };
 
   return (
     <div>
@@ -52,7 +64,7 @@ const DailyPractice: React.FC<DailyPracticeProps> = ({ dailyPracticeItems = defa
           time={item.time}
         />
       ))}
-      {hasMoreItems && <Button variant="outline" className="w-full">View All</Button>}
+      {hasMoreItems && <Button variant="outline" className="w-full" onClick={handleViewAll}>View All</Button>}
     </div>
   );
 };
