@@ -173,6 +173,7 @@ const GrammarFeedbackPage: React.FC = () => {
             variant="ghost" 
             size="icon"
             onClick={() => navigate('/feedback')}
+            className="bg-black text-white hover:bg-gray-800 border border-gray-700"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -181,7 +182,7 @@ const GrammarFeedbackPage: React.FC = () => {
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            className="text-sm"
+            className="text-sm bg-black text-white hover:bg-gray-800 border border-gray-700"
             onClick={() => navigate('/home')}
           >
             Home
@@ -191,17 +192,17 @@ const GrammarFeedbackPage: React.FC = () => {
 
       <div className="flex flex-col gap-8">
         {grammarFeedbackData.map((item, index) => (
-          <div key={index} className="flex flex-col gap-3 bg-background p-5 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300">
+          <div key={index} className="flex flex-col gap-3 bg-black text-white p-5 rounded-xl border border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
             <div className="mb-2">
-              <h2 className="text-lg font-bold text-primary">{item.title}</h2>
+              <h2 className="text-lg font-bold text-white">{item.title}</h2>
               <p className="text-base leading-relaxed mt-1">{item.description}</p>
             </div>
             
-            <div className="flex items-center gap-4 p-3 mt-1 border-2 border-blue-200 rounded-full bg-background shadow-sm">
+            <div className="flex items-center gap-4 p-3 mt-1 border border-gray-700 rounded-full bg-black text-white shadow-sm">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600 transition-colors"
+                className="h-10 w-10 rounded-full bg-gray-800 hover:bg-gray-700 text-white border border-gray-600 transition-colors"
                 onClick={() => handlePlayPause(index)}
               >
                 {playingIndex === index ? (
@@ -213,11 +214,11 @@ const GrammarFeedbackPage: React.FC = () => {
               
               <div className="flex-1">
                 <div 
-                  className="w-full h-2 bg-gray-200 rounded-full cursor-pointer"
+                  className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
                   onClick={(e) => handleProgressBarClick(e, index)}
                 >
                   <div 
-                    className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-out"
+                    className="h-full bg-gray-500 rounded-full transition-all duration-300 ease-out"
                     style={{ width: `${progress[index]}%` }}
                   ></div>
                 </div>
@@ -227,7 +228,7 @@ const GrammarFeedbackPage: React.FC = () => {
                     {Array.from({ length: 20 }).map((_, i) => (
                       <div
                         key={i}
-                        className={`flex-1 bg-blue-600 rounded-full transition-all duration-300 ${playingIndex === index ? 'animate-pulse' : ''}`}
+                        className={`flex-1 bg-gray-500 rounded-full transition-all duration-300 ${playingIndex === index ? 'animate-pulse' : ''}`}
                         style={{ 
                           height: playingIndex === index 
                             ? `${Math.random() * 12 + 5}px` 
@@ -245,12 +246,12 @@ const GrammarFeedbackPage: React.FC = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => handleRestart(index)}
-                className="h-8 w-8 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="h-8 w-8 rounded-full bg-gray-800 hover:bg-gray-700 border border-gray-600 transition-colors"
               >
-                <RotateCcw className="h-4 w-4 text-gray-700" />
+                <RotateCcw className="h-4 w-4 text-white" />
               </Button>
               
-              <span className="text-sm font-medium text-gray-700 w-16 text-right">
+              <span className="text-sm font-medium text-white w-16 text-right">
                 {formatTime(currentTimes[index])}/{formatTime(duration)}
               </span>
             </div>
@@ -260,7 +261,7 @@ const GrammarFeedbackPage: React.FC = () => {
 
       <div className="flex justify-end mt-4">
         <Button
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-black text-white hover:bg-gray-800 border border-gray-700"
           onClick={() => navigate('/practice')}
         >
           Start Practice

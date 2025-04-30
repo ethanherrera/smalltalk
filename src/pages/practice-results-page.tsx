@@ -26,6 +26,7 @@ const PracticeResultsPage: React.FC = () => {
           variant="ghost" 
           size="icon"
           onClick={() => navigate('/practice')}
+          className="bg-black text-white hover:bg-gray-800 border border-gray-700"
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -38,8 +39,8 @@ const PracticeResultsPage: React.FC = () => {
       <div className="flex-1 px-10 py-8 flex flex-col gap-10 max-w-3xl mx-auto w-full">
         <div className="flex flex-col items-center bg-black p-6 rounded-xl shadow-sm">
           <h2 className="text-xl font-bold mb-4 text-white">Your Score</h2>
-          <div className="text-8xl font-bold text-primary">{score}/{total}</div>
-          <div className="mt-2 text-xl font-semibold text-primary">
+          <div className="text-8xl font-bold text-white">{score}/{total}</div>
+          <div className="mt-2 text-xl font-semibold text-white">
             {percentage}% correct
           </div>
         </div>
@@ -57,7 +58,7 @@ const PracticeResultsPage: React.FC = () => {
               <div className="flex flex-col items-center flex-1 bg-black p-3 rounded-lg shadow-sm border border-gray-700">
                 <div className="h-32 w-full bg-gray-800 rounded-md flex items-end">
                   <div 
-                    className="w-full bg-blue-600 rounded-b-md transition-all duration-500"
+                    className="w-full bg-gray-600 rounded-b-md transition-all duration-500"
                     style={{ height: `${(score / total) * 100}%` }}
                   ></div>
                 </div>
@@ -67,7 +68,7 @@ const PracticeResultsPage: React.FC = () => {
               <div className="flex flex-col items-center flex-1 bg-black p-3 rounded-lg shadow-sm border border-gray-700">
                 <div className="h-32 w-full bg-gray-800 rounded-md flex items-end">
                   <div 
-                    className="w-full bg-green-600 rounded-b-md transition-all duration-500"
+                    className="w-full bg-gray-600 rounded-b-md transition-all duration-500"
                     style={{ height: `${Math.min(85, percentage)}%` }}
                   ></div>
                 </div>
@@ -77,7 +78,7 @@ const PracticeResultsPage: React.FC = () => {
               <div className="flex flex-col items-center flex-1 bg-black p-3 rounded-lg shadow-sm border border-gray-700">
                 <div className="h-32 w-full bg-gray-800 rounded-md flex items-end">
                   <div 
-                    className="w-full bg-purple-600 rounded-b-md transition-all duration-500"
+                    className="w-full bg-gray-600 rounded-b-md transition-all duration-500"
                     style={{ height: `${Math.min(90, percentage + 10)}%` }}
                   ></div>
                 </div>

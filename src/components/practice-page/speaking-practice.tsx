@@ -114,10 +114,10 @@ const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
     <div className="space-y-6">
       <div className="space-y-3">
         <h2 className="text-xl font-semibold">{question.question}</h2>
-        <p className="text-gray-600 text-sm">{question.prompt}</p>
+        <p className="text-gray-300 text-sm">{question.prompt}</p>
       </div>
 
-      <Card className="p-4 bg-blue-50 border border-blue-200">
+      <Card className="p-4 bg-black text-white border border-gray-700">
         <div className="font-medium">Practice Instructions</div>
         <p className="text-sm mt-1 whitespace-pre-line">{question.instruction}</p>
       </Card>
@@ -128,8 +128,8 @@ const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
             onClick={isRecording ? stopRecording : startRecording}
             className={`rounded-full h-16 w-16 flex items-center justify-center ${
               isRecording 
-                ? 'bg-red-600 hover:bg-red-700 animate-pulse' 
-                : 'bg-blue-600 hover:bg-blue-700'
+                ? 'bg-black hover:bg-gray-800 border border-red-800 animate-pulse' 
+                : 'bg-black hover:bg-gray-800 border border-gray-600'
             }`}
           >
             {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
@@ -138,25 +138,25 @@ const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
           <div className="flex flex-col items-center gap-2 w-full">
             <audio ref={audioRef} src={audioUrl || undefined} className="hidden" />
             
-            <div className="flex items-center gap-3 p-3 border rounded-full bg-white shadow-sm w-full">
+            <div className="flex items-center gap-3 p-3 border rounded-full bg-black text-white shadow-sm w-full">
               <Button
                 variant="ghost"
                 onClick={togglePlayback}
-                className="h-10 w-10 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-600"
+                className="h-10 w-10 rounded-full bg-gray-800 hover:bg-gray-700 text-white border border-gray-600"
               >
                 {isPlaying ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
               </Button>
               
-              <div className="flex-1 h-2 bg-gray-200 rounded-full">
-                <div className="h-full bg-blue-500 rounded-full w-0 animate-progress"></div>
+              <div className="flex-1 h-2 bg-gray-700 rounded-full">
+                <div className="h-full bg-gray-500 rounded-full w-0 animate-progress"></div>
               </div>
               
-              <span className="text-sm font-medium text-gray-700">0:00 / 0:00</span>
+              <span className="text-sm font-medium text-gray-300">0:00 / 0:00</span>
             </div>
           </div>
         )}
         
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-gray-300">
           {isRecording ? 'Recording... Click to stop' : !recordingComplete ? 'Click to start recording' : 'Recording complete'}
         </div>
       </div>
@@ -165,16 +165,16 @@ const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
         <div>
           <h3 className="font-semibold mb-2">Feedback</h3>
           <div className="space-y-2">
-            <div className="p-3 bg-green-50 rounded-lg">
-              <p className="text-green-800 font-medium">Correct Response:</p>
+            <div className="p-3 bg-black rounded-lg border border-green-800 text-white">
+              <p className="text-gray-300 font-medium">Correct Response:</p>
               <p className="text-sm mt-1">{question.correctResponse}</p>
             </div>
             
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <p className="text-blue-800 font-medium">Your Performance:</p>
+            <div className="p-3 bg-black rounded-lg border border-gray-700 text-white">
+              <p className="text-gray-300 font-medium">Your Performance:</p>
               <div className="flex flex-wrap gap-2 mt-2">
                 {question.feedback.map((item, index) => (
-                  <span key={index} className="inline-block px-3 py-1 text-sm bg-white rounded-full border border-blue-200">
+                  <span key={index} className="inline-block px-3 py-1 text-sm bg-black text-white rounded-full border border-gray-600">
                     {item}
                   </span>
                 ))}
@@ -183,7 +183,7 @@ const SpeakingPractice: React.FC<SpeakingPracticeProps> = ({
           </div>
           
           <div className="flex justify-end mt-4">
-            <Button onClick={onNext} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={onNext} className="bg-black hover:bg-gray-800 text-white border border-gray-700">
               Continue
             </Button>
           </div>

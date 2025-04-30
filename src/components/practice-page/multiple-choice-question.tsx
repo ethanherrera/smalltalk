@@ -29,18 +29,18 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
   };
 
   const getOptionClassName = (optionId: string, correct?: boolean) => {
-    let baseClass = "p-4 border rounded-lg shadow-sm mb-3 transition-all duration-200 cursor-pointer";
+    let baseClass = "p-4 border rounded-lg shadow-sm mb-3 transition-all duration-200 cursor-pointer bg-black text-white";
     
     if (!showAnswer) {
-      return `${baseClass} ${selectedOption === optionId ? 'bg-blue-50 border-blue-500' : 'hover:bg-gray-50 hover:border-blue-500'}`;
+      return `${baseClass} ${selectedOption === optionId ? 'border-gray-400' : 'hover:border-gray-400'}`;
     }
     
     if (correct) {
-      return `${baseClass} bg-green-50 border-green-500`;
+      return `${baseClass} border-green-800`;
     }
     
     if (selectedOption === optionId && !correct) {
-      return `${baseClass} bg-red-50 border-red-500`;
+      return `${baseClass} border-red-800`;
     }
     
     return `${baseClass} opacity-50`;
@@ -62,7 +62,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
           >
             <div className="flex items-center gap-3">
               <div className={`flex items-center justify-center h-7 w-7 rounded-full border ${
-                selectedOption === option.id ? 'bg-blue-500 text-white border-blue-500' : 'border-gray-300'
+                selectedOption === option.id ? 'bg-gray-700 text-white border-gray-600' : 'border-gray-500'
               }`}>
                 {option.id}
               </div>
@@ -73,7 +73,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
       </div>
 
       {showAnswer && (
-        <Card className="p-4 bg-blue-50">
+        <Card className="p-4 bg-black text-white border border-gray-700">
           <p className="font-medium">Explanation</p>
           <p className="text-sm mt-1">{question.explanation}</p>
         </Card>
@@ -83,7 +83,7 @@ const MultipleChoiceQuestion: React.FC<MultipleChoiceQuestionProps> = ({
         {showAnswer && (
           <Button
             onClick={onNext}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-black hover:bg-gray-800 text-white border border-gray-700"
           >
             Continue
           </Button>

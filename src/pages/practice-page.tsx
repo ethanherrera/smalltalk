@@ -89,6 +89,7 @@ const PracticePage: React.FC = () => {
             variant="ghost" 
             size="icon"
             onClick={() => navigate('/home')}
+            className="bg-black text-white hover:bg-gray-800 border border-gray-700"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -96,7 +97,7 @@ const PracticePage: React.FC = () => {
         </div>
         <Button
           variant="outline"
-          className="text-sm"
+          className="text-sm bg-black text-white border-gray-700 hover:bg-gray-800"
           onClick={() => navigate('/feedback')}
         >
           View Feedback
@@ -114,9 +115,9 @@ const PracticePage: React.FC = () => {
               key={index} 
               className={`h-2.5 w-2.5 rounded-full ${
                 index < currentQuestionIndex 
-                  ? 'bg-blue-600' 
+                  ? 'bg-gray-700' 
                   : index === currentQuestionIndex 
-                  ? 'bg-blue-500' 
+                  ? 'bg-gray-500' 
                   : 'bg-gray-300'
               }`}
             />
@@ -125,9 +126,9 @@ const PracticePage: React.FC = () => {
       </div>
 
       {/* Progress bar */}
-      <div className="relative h-1.5 w-full bg-gray-200">
+      <div className="relative h-1.5 w-full bg-black">
         <div 
-          className="absolute h-full bg-blue-600 transition-all duration-300 ease-in-out"
+          className="absolute h-full bg-gray-700 transition-all duration-300 ease-in-out"
           style={{ 
             width: `${((currentQuestionIndex / practiceData.length) * 100)}%`, 
             borderTopRightRadius: '5px', 
