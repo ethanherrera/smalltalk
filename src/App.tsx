@@ -5,6 +5,9 @@ import RecordPage from "./pages/record-page";
 import FeedbackPage from "./pages/feedback-page";
 import SpecificFeedbackPage from "./pages/specific-feedback-page";
 import MectricsGraphPage from "./pages/metrics-graph-page";
+import PracticePage from "./pages/practice-page";
+import GrammarFeedbackPage from "./pages/grammar-feedback-page";
+import PracticeResultsPage from "./pages/practice-results-page";
 import {
   BrowserRouter,
   Routes,
@@ -31,6 +34,9 @@ function App() {
         path="/metrics-graph"
         element={<MectricsGraphPage metric_type={metric_type} />}
       />
+      <Route path="/practice" element={<PracticePage />} />
+      <Route path="/grammar-feedback" element={<GrammarFeedbackPage />} />
+      <Route path="/practice-results" element={<PracticeResultsPage />} />
     </Routes>
   );
 }
