@@ -12,104 +12,89 @@ const RecordPage: React.FC = () => {
   const [showControls, setShowControls] = useState(false);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
+    let id: NodeJS.Timeout;
     if (isRecording) {
-      intervalId = setInterval(() => {
-        setElapsedTime(prev => prev + 1);
-      }, 1000);
+      id = setInterval(() => setElapsedTime(t => t + 1), 1000);
     }
-
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
+    return () => id && clearInterval(id);
   }, [isRecording]);
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m}:${sec.toString().padStart(2, '0')}`;
   };
 
-  const handleStartRecording = () => {
+  const start = () => {
     setIsRecording(true);
     setElapsedTime(0);
   };
-
-  const handleStopRecording = () => {
+  const stop = () => {
     setIsRecording(false);
     setShowControls(true);
   };
-
-  const handleTryAgain = () => {
+  const retry = () => {
     setShowControls(false);
     setElapsedTime(0);
+    setIsRecording(false);
   };
-
-  const handleSubmit = () => {
-    navigate('/feedback');
-  };
+  const submit = () => navigate('/feedback');
 
   return (
-    <div className="flex flex-col gap-4 pb-32 p-10">
+    <div className="flex flex-col gap-4 pb-32">
       <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
-        <Button 
-          variant="ghost" 
-          size="icon"
-          onClick={() => navigate('/home')}
-        >
-          <ArrowLeft className="h-5 w-5" />
+        <Button variant="ghost" size="icon" onClick={() => navigate('/home')}>
+          <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-bold">Record Conversation</h1>
       </div>
+
       <TranscriptBox />
-      <div className="flex flex-col gap-4">
-        {isRecording && (
-          <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/30">
-            <Button
-              variant="destructive"
-              size="icon"
-              className="h-10 w-10 rounded-full p-0"
-              onClick={handleStopRecording}
-            >
-              <Square className="h-5 w-5 text-white" />
-            </Button>
-            <div className="flex-1">
-              <AudioVisualizer isRecording={isRecording} />
-            </div>
-            <div className="text-lg font-medium text-destructive">
-              {formatTime(elapsedTime)}
-            </div>
-          </div>
-        )}
+
+      <div className="fixed bottom-6 w-11/12 left-1/2 -translate-x-1/2 px-4 z-10">
         {!isRecording && !showControls && (
-          <Button 
-            variant="destructive" 
-            onClick={handleStartRecording}
-            className="flex items-center gap-2"
+          <Button
+            onClick={start}
+            className="w-full h-20 rounded-full bg-primary text-lg flex items-center justify-center gap-2"
           >
-            <Mic className="h-10 w-10" />
+            <Mic className="h-6 w-6" />
             Start Recording
           </Button>
         )}
-        {showControls && (
-          <div className="flex gap-4">
-            <Button 
-              variant="outline" 
-              onClick={handleTryAgain}
-              className="flex-1 flex items-center gap-2 ml-10"
+
+        {isRecording && (
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-20 rounded-lg overflow-hidden">
+              <AudioVisualizer isRecording />
+            </div>
+            <div className="text-lg font-medium text-primary">
+              {formatTime(elapsedTime)}
+            </div>
+            <Button
+              onClick={stop}
+              className="h-20 w-20 rounded-full bg-primary text-primary-foreground flex-shrink-0"
             >
-              <RotateCcw className="h-5 w-5" />
+              <Square className="h-6 w-6" />
+            </Button>
+          </div>
+        )}
+
+        {showControls && (
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={retry}
+              className="flex-1 h-20 rounded-full flex items-center justify-center gap-2"
+            >
+              <RotateCcw className="h-6 w-6" />
               Try Again
             </Button>
-            <Button 
+            <Button
               variant="default"
-              onClick={handleSubmit}
-              className="flex-1 flex items-center gap-2 mr-10"
+              onClick={submit}
+              className="flex-1 h-20 rounded-full flex items-center justify-center gap-2"
             >
-              <Send className="h-5 w-5" />
+              <Send className="h-6 w-6" />
               Submit
             </Button>
           </div>
