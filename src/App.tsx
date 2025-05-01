@@ -5,6 +5,7 @@ import RecordPage from "./pages/record-page";
 import FeedbackPage from "./pages/feedback-page";
 import SpecificFeedbackPage from "./pages/specific-feedback-page";
 import MectricsGraphPage from "./pages/metrics-graph-page";
+import Practice from "./pages/Practice";
 import {
   BrowserRouter,
   Routes,
@@ -31,6 +32,8 @@ function App() {
         path="/metrics-graph"
         element={<MectricsGraphPage metric_type={metric_type} />}
       />
+      <Route path="/practice" element={<Practice />} />
+      <Route path="/practice/:id" element={<Practice />} />
     </Routes>
   );
 }
