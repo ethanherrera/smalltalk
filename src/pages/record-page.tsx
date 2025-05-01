@@ -51,17 +51,10 @@ const RecordPage: React.FC = () => {
 
       <TranscriptBox />
       <div className="flex justify-center mb-4">
-<<<<<<< HEAD
-        <Button 
-          variant="outline" 
-          className="flex items-center gap-2 px-6 py-2 border-blue-500 text-blue-500 hover:bg-blue-50"
-          onClick={() => navigate('/practice')}
-=======
         <Button
           variant="outline"
           className="flex items-center gap-2 px-6 py-2 border-blue-500 text-blue-500 hover:bg-blue-50"
           onClick={() => navigate("/practice")}
->>>>>>> x1
         >
           <span className="font-medium">Switch to Practice Mode</span>
         </Button>
@@ -120,3 +113,4 @@ const RecordPage: React.FC = () => {
 };
 
 export default RecordPage;
+
