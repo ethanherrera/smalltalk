@@ -25,7 +25,9 @@ export function Metrics() {
   return (
     <div>
         <Card 
-        className="p-6 cursor-pointer hover:bg-gray-50 transition-colors" 
+        className="p-6 cursor-pointer transition-colors 
+        hover:bg-[var(--primary)]/10 
+        dark:hover:bg-[var(--primary)]/20"
         onClick={handleMetricsClick}
         >
         <CardContent className="flex items-start justify-between p-0">
@@ -52,7 +54,6 @@ export function Metrics() {
             </div>
         </CardContent>
         </Card>
-    <Button variant="outline" className="w-full" onClick={handleMetricsClick}>View All</Button>
     </div>
   )
 }

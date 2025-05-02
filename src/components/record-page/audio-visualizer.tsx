@@ -28,7 +28,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ isRecording }) => {
 
       // Draw multiple sine waves with different frequencies and phases
       ctx.beginPath();
-      ctx.strokeStyle = '#ef4444'; // Red color matching destructive button
+      ctx.strokeStyle = '#6A4DF4'; 
       ctx.lineWidth = 2;
 
       for (let x = 0; x < canvas.width; x++) {
