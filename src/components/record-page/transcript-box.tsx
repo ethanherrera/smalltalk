@@ -16,7 +16,7 @@ const TranscriptBox: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center mt-4">
-      <div className="w-[90%] max-w-3xl">
+      <div className="w-full">
         <h2 className="text-xl font-semibold mb-3">Live Transcript</h2>
         <div 
           className="h-[60vh] overflow-y-auto border rounded-lg p-4 bg-muted/30"
