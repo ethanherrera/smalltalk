@@ -6,6 +6,13 @@ import TranscriptBox from '@/components/record-page/transcript-box';
 import AudioVisualizer from '@/components/record-page/audio-visualizer';
 import { transcribeAudio } from '@/services/whisper';
 
+// Define the Message interface for consistency with TranscriptBox
+interface Message {
+  speaker: string;
+  text: string;
+  isLive?: boolean;
+}
+
 // For testing - simulates a transcription response with a delay
 const mockTranscription = async (text: string, delay: number = 500): Promise<string> => {
   return new Promise((resolve) => {
@@ -16,9 +23,6 @@ const mockTranscription = async (text: string, delay: number = 500): Promise<str
 // Use this flag to toggle between real and mock transcription
 const USE_MOCK_TRANSCRIPTION = false; // Set to true for testing UI, false for real API
 
-// Amount of silent time (ms) before creating a new line
-const NEW_LINE_SILENCE_THRESHOLD = 800; // 0.8 seconds of silence to create a new line
-
 const RecordPage: React.FC = () => {
   const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
@@ -26,10 +30,11 @@ const RecordPage: React.FC = () => {
   const [showControls, setShowControls] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [liveTranscript, setLiveTranscript] = useState('');
+  const [liveMessages, setLiveMessages] = useState<Message[]>([]);
+  const [currentUtterance, setCurrentUtterance] = useState('');
   const [error, setError] = useState('');
   const [debug, setDebug] = useState('');
   const [hasAudioPermission, setHasAudioPermission] = useState<boolean | null>(null);
-  const [forceNewLine, setForceNewLine] = useState(false);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -37,23 +42,20 @@ const RecordPage: React.FC = () => {
   const chunksRef = useRef<Blob[]>([]);
   const isTranscribingRef = useRef(false);
   const mockWordsRef = useRef<string[]>([
-    "Hello,", 
+    "Hello,",
     "my", 
     "name", 
     "is", 
-    "Nick.", 
-    "Thank", 
-    "you", 
-    "for", 
-    "listening", 
-    "to", 
-    "me", 
-    "speak."
+    "Nick."
   ]);
   const mockIndexRef = useRef(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const lastTranscriptionTimeRef = useRef<number>(Date.now());
-  const lastTranscriptRef = useRef<string>('');
+  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTranscriptRef = useRef('');
+  const currentMessageRef = useRef<Message | null>(null);
+  const lastReceivedTextRef = useRef('');
+  const pausedSpeakingRef = useRef(false);
+  const utteranceSegmentsRef = useRef<Set<string>>(new Set());
 
   // Timer for elapsed time
   useEffect(() => {
@@ -89,13 +91,6 @@ const RecordPage: React.FC = () => {
       // Set up a periodic poll for live transcription
       intervalRef.current = setInterval(() => {
         if (chunksRef.current.length > 0 && !isTranscribingRef.current) {
-          const now = Date.now();
-          // Check if we've had a long enough pause to force a new line
-          if (now - lastTranscriptionTimeRef.current > NEW_LINE_SILENCE_THRESHOLD) {
-            setForceNewLine(true);
-            console.log(`Forcing new line due to pause in speaking: ${now - lastTranscriptionTimeRef.current}ms`);
-          }
-          
           transcribeCurrentAudio();
         }
       }, 3000);
@@ -131,24 +126,111 @@ const RecordPage: React.FC = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  // Define the mock word sequence
+  const secondUtterance = [
+    "I",
+    "would",
+    "love",
+    "it",
+    "if",
+    "you",
+    "could",
+    "come",
+    "to",
+    "my",
+    "ceremony."
+  ];
+
   // Update with a mock transcription for testing
   const updateMockTranscription = () => {
     if (!isRecording) return;
     
-    // Simulate gradual buildup of transcription
+    // First utterance simulation
     if (mockIndexRef.current < mockWordsRef.current.length) {
       const words = mockWordsRef.current.slice(0, mockIndexRef.current + 1);
       const text = words.join(" ");
       mockIndexRef.current++;
       
-      console.log('[MOCK] Transcription update:', text);
+      console.log('[MOCK] First utterance update:', text);
       
-      // Simulate forcing a new line every 3 words
-      const shouldForceNewLine = mockIndexRef.current % 3 === 0;
-      setLiveTranscript(text);
+      // Create or update the first message
+      if (!currentMessageRef.current) {
+        currentMessageRef.current = {
+          speaker: 'You',
+          text,
+          isLive: true
+        };
+        setLiveMessages(prev => [...prev, currentMessageRef.current!]);
+        lastReceivedTextRef.current = text;
+        utteranceSegmentsRef.current.add(text);
+      } else {
+        // Update existing message
+        currentMessageRef.current.text = text;
+        lastReceivedTextRef.current = text;
+        utteranceSegmentsRef.current.add(text);
+        setLiveMessages(prev => [...prev]); // Force re-render
+      }
       
-      if (shouldForceNewLine) {
-        setForceNewLine(true);
+      // When first utterance is complete, start the second one
+      if (mockIndexRef.current === mockWordsRef.current.length) {
+        console.log('[MOCK] First utterance complete, scheduling second');
+        
+        // Simulate a pause between utterances
+        setTimeout(() => {
+          // Mark the speaker as paused (silence detected)
+          pausedSpeakingRef.current = true;
+          console.log('[MOCK] Silence detected, ready for second utterance');
+          
+          // Store the last complete utterance
+          lastTranscriptRef.current = currentMessageRef.current?.text || '';
+          
+          // Start second utterance after a pause
+          setTimeout(() => {
+            let secondIndex = 0;
+            
+            const secondInterval = setInterval(() => {
+              if (secondIndex < secondUtterance.length) {
+                const secondText = secondUtterance.slice(0, secondIndex + 1).join(" ");
+                console.log('[MOCK] Second utterance update:', secondText);
+                
+                // This will be detected as a new utterance because pausedSpeakingRef is true
+                if (secondIndex === 0) {
+                  // Create a new message for the second utterance
+                  currentMessageRef.current = {
+                    speaker: 'You',
+                    text: secondText,
+                    isLive: true
+                  };
+                  setLiveMessages(prev => [...prev, currentMessageRef.current!]);
+                  
+                  // Reset utterance tracking for new utterance
+                  utteranceSegmentsRef.current.clear();
+                  utteranceSegmentsRef.current.add(secondText);
+                  
+                  // Update reference text
+                  lastReceivedTextRef.current = secondText;
+                  pausedSpeakingRef.current = false;
+                } else if (currentMessageRef.current) {
+                  // Update the current message with more words
+                  currentMessageRef.current.text = secondText;
+                  lastReceivedTextRef.current = secondText;
+                  utteranceSegmentsRef.current.add(secondText);
+                  setLiveMessages(prev => [...prev]); // Force re-render
+                }
+                
+                // Update legacy implementation
+                setLiveTranscript(secondText);
+                
+                secondIndex++;
+              } else {
+                clearInterval(secondInterval);
+              }
+            }, 300);
+          }, 500);
+        }, 1000);
+      } else {
+        // Set legacy transcript during first utterance
+        setLiveTranscript(text);
       }
     }
   };
@@ -202,21 +284,6 @@ const RecordPage: React.FC = () => {
     }
   };
 
-  // Detect significant pauses in speech
-  const detectSilence = (audioBuffer: AudioBuffer, silenceThreshold = 0.01): boolean => {
-    const data = audioBuffer.getChannelData(0);
-    const samples = data.length;
-    
-    // Calculate RMS (root mean square) of the audio data
-    let sum = 0;
-    for (let i = 0; i < samples; i++) {
-      sum += data[i] * data[i];
-    }
-    const rms = Math.sqrt(sum / samples);
-    
-    return rms < silenceThreshold;
-  };
-
   // Transcribe the current audio collected
   const transcribeCurrentAudio = async () => {
     if (!isRecording || chunksRef.current.length === 0 || isTranscribingRef.current) {
@@ -238,31 +305,87 @@ const RecordPage: React.FC = () => {
       
       const result = await transcribeAudio(audioBlob, true);
       
-      // Check if the transcription has actually changed
       if (result && result.trim()) {
-        const now = Date.now();
-        const timeSinceLastTranscription = now - lastTranscriptionTimeRef.current;
+        // Store the raw transcript text (for debugging/comparison)
+        const rawText = result.trim();
         
-        // Compare with previous transcription
-        const hasSignificantlyChanged = 
-          !lastTranscriptRef.current || 
-          Math.abs(result.length - lastTranscriptRef.current.length) > 10 ||
-          (result.trim().endsWith(".") && !lastTranscriptRef.current.trim().endsWith("."));
+        // Update the legacy liveTranscript for backward compatibility
+        setLiveTranscript(rawText);
         
-        // Update the live transcript with timing information
-        setLiveTranscript(result);
+        console.log(`[TRANSCRIPT] New text: "${rawText}"`);
+        console.log(`[TRANSCRIPT] Current message: ${currentMessageRef.current ? `"${currentMessageRef.current.text}"` : 'null'}`);
+        console.log(`[TRANSCRIPT] Last text: "${lastReceivedTextRef.current}"`);
+        console.log(`[TRANSCRIPT] Paused: ${pausedSpeakingRef.current}`);
         
-        // Store reference data
-        lastTranscriptRef.current = result;
-        lastTranscriptionTimeRef.current = now;
+        // Set a silence timer to detect pauses between utterances
+        if (silenceTimeoutRef.current) {
+          clearTimeout(silenceTimeoutRef.current);
+        }
         
-        // Log information for debugging
-        console.log(`Transcription updated. Time since last: ${timeSinceLastTranscription}ms, Changed: ${hasSignificantlyChanged}, Force new line: ${forceNewLine}`);
+        silenceTimeoutRef.current = setTimeout(() => {
+          console.log('[TRANSCRIPT] Silence detected, marking user as paused');
+          pausedSpeakingRef.current = true;
+        }, 1500); // Increased from 1000ms to 1500ms
         
-        // If we had a long pause, significant change, or detected end of sentence, signal to create a new line
-        if (timeSinceLastTranscription > NEW_LINE_SILENCE_THRESHOLD || hasSignificantlyChanged) {
-          setForceNewLine(true);
-          console.log(`Setting forceNewLine to true due to ${hasSignificantlyChanged ? 'significant change' : 'silence'}`);
+        // Check if this is an entirely new sentence that should be on a new line
+        // Here's a simple, robust check that works with the real API responses:
+        
+        // 1. First utterance case
+        if (!currentMessageRef.current) {
+          console.log('[TRANSCRIPT] First utterance, creating new message');
+          currentMessageRef.current = {
+            speaker: 'You',
+            text: rawText,
+            isLive: true
+          };
+          setLiveMessages(prev => [...prev, currentMessageRef.current!]);
+          lastReceivedTextRef.current = rawText;
+          pausedSpeakingRef.current = false;
+          return;
+        }
+        
+        // 2. Check if text has completely changed
+        // Get the first 20 chars of each string to compare beginnings
+        const prevStart = currentMessageRef.current.text.substring(0, 20).toLowerCase();
+        const newStart = rawText.substring(0, 20).toLowerCase();
+        
+        // If the starts of sentences don't match at all and we're paused speaking,
+        // it's very likely this is a completely new sentence/utterance
+        const isCompleteDifference = prevStart !== newStart && !prevStart.includes(newStart.substring(0, 5)) && 
+                                     !newStart.includes(prevStart.substring(0, 5));
+        
+        if (pausedSpeakingRef.current && rawText !== currentMessageRef.current.text) {
+          // When we've had silence and new text appears, create a new message
+          console.log('[TRANSCRIPT] New utterance after pause, creating new message');
+          currentMessageRef.current = {
+            speaker: 'You',
+            text: rawText,
+            isLive: true
+          };
+          setLiveMessages(prev => [...prev, currentMessageRef.current!]);
+          lastReceivedTextRef.current = rawText;
+          pausedSpeakingRef.current = false;
+        }
+        // If not paused but text is completely different (a restart in the conversation)
+        else if (isCompleteDifference) {
+          console.log('[TRANSCRIPT] Completely different text, creating new message');
+          currentMessageRef.current = {
+            speaker: 'You',
+            text: rawText,
+            isLive: true
+          };
+          setLiveMessages(prev => [...prev, currentMessageRef.current!]);
+          lastReceivedTextRef.current = rawText;
+          pausedSpeakingRef.current = false;
+        }
+        // If text is similar to what we already have, just update the current message
+        else {
+          console.log('[TRANSCRIPT] Updating existing message');
+          // Just update the existing message
+          currentMessageRef.current.text = rawText;
+          lastReceivedTextRef.current = rawText;
+          // Force update of the live messages array to trigger re-render
+          setLiveMessages(prev => [...prev]);
         }
       }
     } catch (error: any) {
@@ -274,12 +397,6 @@ const RecordPage: React.FC = () => {
     }
   };
 
-  // Handle new line created callback
-  const handleNewLineCreated = () => {
-    console.log("New line was created, resetting force new line flag");
-    setForceNewLine(false);
-  };
-
   // The main recording function
   const startRealRecording = async () => {
     try {
@@ -289,9 +406,6 @@ const RecordPage: React.FC = () => {
       
       // Always reset state
       chunksRef.current = [];
-      lastTranscriptionTimeRef.current = Date.now();
-      lastTranscriptRef.current = '';
-      setForceNewLine(false);
       
       // Request audio access
       console.log('Requesting user media...');
@@ -376,13 +490,21 @@ const RecordPage: React.FC = () => {
     // Reset state
     setTranscript('');
     setLiveTranscript('');
+    setLiveMessages([]);
     setError('');
     setDebug('');
     chunksRef.current = [];
     mockIndexRef.current = 0;
-    lastTranscriptionTimeRef.current = Date.now();
+    currentMessageRef.current = null;
     lastTranscriptRef.current = '';
-    setForceNewLine(false);
+    lastReceivedTextRef.current = '';
+    pausedSpeakingRef.current = false;
+    utteranceSegmentsRef.current.clear();
+    
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
     
     if (USE_MOCK_TRANSCRIPTION) {
       console.log('Using mock transcription');
@@ -394,15 +516,23 @@ const RecordPage: React.FC = () => {
   };
 
   const handleStopRecording = async () => {
+    // Always clear pending silence timeout
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
+    
+    // Reset certain transcription state but preserve messages
+    lastTranscriptRef.current = '';
+    lastReceivedTextRef.current = '';
+    pausedSpeakingRef.current = false;
+    utteranceSegmentsRef.current.clear();
+    
     if (USE_MOCK_TRANSCRIPTION) {
       setIsRecording(false);
       setShowControls(true);
       
-      // Build final transcript from all mock words
-      const finalText = mockWordsRef.current.join(" ");
-      setTranscript(finalText);
-      setLiveTranscript('');
-      
+      // Don't update the transcript or clear live messages
       console.log('Mock recording stopped');
       return;
     }
@@ -413,8 +543,8 @@ const RecordPage: React.FC = () => {
     // Clean up all audio
     stopAllAudio();
     
-    // Get final transcription
-    if (chunksRef.current.length > 0) {
+    // If we're not using live messages or they're empty, get the final transcription
+    if (liveMessages.length === 0 && chunksRef.current.length > 0) {
       try {
         const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
         console.log('Getting final transcription, size:', audioBlob.size, 'bytes');
@@ -423,7 +553,13 @@ const RecordPage: React.FC = () => {
         console.log('Received final transcription:', finalTranscript);
         
         if (finalTranscript && finalTranscript.trim()) {
-          setTranscript(finalTranscript);
+          // Process the final transcript to add line breaks at sentence boundaries
+          const processedTranscript = finalTranscript
+            .replace(/\.\s+([A-Z])/g, '.\n$1')  // Add newline after period followed by capital letter
+            .replace(/\?\s+([A-Z])/g, '?\n$1')  // Add newline after question mark followed by capital letter
+            .replace(/!\s+([A-Z])/g, '!\n$1');  // Add newline after exclamation mark followed by capital letter
+          
+          setTranscript(processedTranscript);
           setLiveTranscript('');
         } else {
           setError('Received empty transcription. Your audio may not contain clear speech.');
@@ -434,7 +570,8 @@ const RecordPage: React.FC = () => {
         setError(`Final transcription error: ${errorMessage}`);
       }
     } else {
-      setError('No audio was recorded. Please check your microphone and permissions.');
+      // We have live messages, so no need to get a final transcription
+      console.log('Using existing live messages, skipping final transcription');
     }
   };
 
@@ -443,13 +580,25 @@ const RecordPage: React.FC = () => {
     setElapsedTime(0);
     setTranscript('');
     setLiveTranscript('');
+    setLiveMessages([]);
     setError('');
     setDebug('');
     chunksRef.current = [];
     mockIndexRef.current = 0;
+    currentMessageRef.current = null;
+    lastTranscriptRef.current = '';
+    lastReceivedTextRef.current = '';
+    pausedSpeakingRef.current = false;
+    utteranceSegmentsRef.current.clear();
+    
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
   };
 
   const handleSubmit = () => {
+    // Navigate directly to feedback without clearing or changing the transcript
     navigate('/feedback');
   };
 
@@ -484,8 +633,7 @@ const RecordPage: React.FC = () => {
         isRecording={isRecording} 
         transcript={transcript}
         liveTranscript={liveTranscript}
-        forceNewLine={forceNewLine}
-        onNewLineCreated={handleNewLineCreated}
+        liveMessages={liveMessages}
       />
       
       {error && (
@@ -496,7 +644,7 @@ const RecordPage: React.FC = () => {
       
       {debug && (
         <div className="p-2 bg-gray-100 text-gray-700 text-sm rounded-md">
-          Status: {debug} {forceNewLine ? "(Force new line active)" : ""}
+          Status: {debug}
         </div>
       )}
       
