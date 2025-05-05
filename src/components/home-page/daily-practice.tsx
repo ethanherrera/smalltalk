@@ -1,9 +1,8 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
-
 interface DailyPracticeItem {
   title?: string;
   time?: number;
@@ -38,8 +37,8 @@ const DailyPracticeCard: React.FC<DailyPracticeCardProps> = ({ title="", time=0,
   return (
     <Card className="mb-4 cursor-pointer" onClick={handleClick}>
       <div className="flex items-center justify-between px-6 py-3">
-        <div>
-          <CardTitle className="text-base">{title}</CardTitle>
+        <div className="flex flex-col items-start text-left">
+          <CardTitle className="text-base mb-2">{title}</CardTitle>
           <p className="text-sm text-muted-foreground">Time: {time} minutes</p>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -52,6 +51,10 @@ const DailyPractice: React.FC<DailyPracticeProps> = ({ dailyPracticeItems = defa
   const navigate = useNavigate();
   const displayedItems = dailyPracticeItems.slice(0, 2);
   const hasMoreItems = dailyPracticeItems.length > 2;
+
+  const handleViewAll = () => {
+    navigate('/practice');
+  };
 
   return (
     <div>

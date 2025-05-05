@@ -5,7 +5,7 @@ import RecordPage from "./pages/record-page";
 import FeedbackPage from "./pages/feedback-page";
 import SpecificFeedbackPage from "./pages/specific-feedback-page";
 import MectricsGraphPage from "./pages/metrics-graph-page";
-import Practice from "./pages/Practice";
+import Practice from "./pages/practice";
 import {
   BrowserRouter,
   Routes,

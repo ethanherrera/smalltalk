@@ -10,11 +10,20 @@ const FeedbackPage: React.FC = () => {
   const randomScore = () => Math.floor(Math.random() * 5) + 1;
 
   const handleSpecificFeedback = (feedback: string) => {
-    navigate(`/specific-feedback/${feedback}`);
+    // For Grammar feedback, navigate to the new grammar feedback page
+    if (feedback === "Grammar") {
+      navigate(`/grammar-feedback`);
+    } else {
+      navigate(`/specific-feedback/${feedback}`);
+    }
+  };
+
+  const handleStartPractice = () => {
+    navigate('/practice');
   };
   
   return (
-    <div className="flex flex-col gap-4 pb-32 p-10">
+    <div className="flex flex-col gap-4 pb-32 px-4">
       <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
         <Button 
           variant="ghost" 
@@ -71,6 +80,16 @@ const FeedbackPage: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+      
+      {/* Practice button */}
+      <div className="flex justify-center mt-8">
+        <Button
+          className="py-4 px-8 text-lg font-bold rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-md"
+          onClick={handleStartPractice}
+        >
+          Start Practice
+        </Button>
       </div>
     </div>
   );
