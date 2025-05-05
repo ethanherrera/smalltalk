@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TranscriptBox from '@/components/record-page/transcript-box';
 import AudioVisualizer from '@/components/record-page/audio-visualizer';
-import { transcribeAudioWithDiarization } from '@/services/assemblyai';
+import { transcribeAndAnalyzeLanguage } from '@/services/assemblyai';
 
 // Define the Message interface for consistency with TranscriptBox
 interface Message {
@@ -324,13 +324,13 @@ const RecordPage: React.FC = () => {
       try {
         // Set transcribing state to show loading indicator
         setIsTranscribing(true);
-        setDebug('Transcribing audio with AssemblyAI...');
+        setDebug('Transcribing audio with AssemblyAI and analyzing language...');
         
         const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
         console.log('Processing audio with AssemblyAI, size:', audioBlob.size, 'bytes');
         
-        // Call AssemblyAI service
-        const result = await transcribeAudioWithDiarization(audioBlob);
+        // Call AssemblyAI service with language analysis
+        const result = await transcribeAndAnalyzeLanguage(audioBlob);
         
         if (result.error) {
           setError(`Transcription error: ${result.error}`);
@@ -338,6 +338,15 @@ const RecordPage: React.FC = () => {
           // Convert the utterances to messages for the UI
           setLiveMessages(result.utterances);
           console.log('Transcription completed with diarization:', result.utterances);
+          
+          // Store the analysis result in sessionStorage for the feedback page
+          if (result.languageAnalysis) {
+            sessionStorage.setItem('languageAnalysis', JSON.stringify(result.languageAnalysis));
+            console.log('Language analysis stored in session:', result.languageAnalysis);
+          }
+          
+          // Store the conversation for context
+          sessionStorage.setItem('conversation', JSON.stringify(result.utterances));
         } else if (result.text) {
           // If no utterances but there is text, create a single message
           setLiveMessages([{
@@ -399,7 +408,7 @@ const RecordPage: React.FC = () => {
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold">Record Conversation (Spanish)</h1>
+        <h1 className="text-2xl font-bold">Record Conversation</h1>
       </div>
       
       {renderPermissionMessage()}
@@ -408,7 +417,10 @@ const RecordPage: React.FC = () => {
         isRecording={isRecording} 
         transcript={transcript}
         liveTranscript={""}
-        liveMessages={liveMessages}
+        liveMessages={liveMessages.map(msg => ({
+          ...msg,
+          displaySpeaker: msg.speaker === "Person A" ? "You" : msg.speaker
+        }))}
       />
       
       {error && (
@@ -417,7 +429,7 @@ const RecordPage: React.FC = () => {
         </div>
       )}
       
-      {debug && (
+      {debug && !isRecording && (
         <div className="p-2 bg-gray-100 text-gray-700 text-sm rounded-md">
           Status: {debug}
         </div>

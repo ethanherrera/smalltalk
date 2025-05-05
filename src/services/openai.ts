@@ -82,28 +82,29 @@ export const analyzeLanguageSkills = async (
       messages: [
         {
           role: 'system',
-          content: 'You are a language assessment specialist. Analyze Person A\'s Spanish language skills in the following conversation. Assume the learner is Person A. Provide specific feedback about grammar, pronunciation indications, terminology usage, and fluency. Your analysis should be constructive and educational.'
+          content: 'You are a language assessment specialist. Analyze the learner\'s Spanish language skills in the following conversation. The learner is Person A. Provide specific feedback addressing the learner directly using "you" instead of "Person A". Your analysis should be constructive, educational and personalized. YOU MUST RESPOND ONLY WITH VALID JSON. do not respond with "as this is a written conversation", just look for transcription errors where they may have meant to say another word. For proncunciation for example if they may have meant to say "hola" based on the context, but the transcript is "hoal", then this is a pronunciation error. DO NOT RESPOND WITH "as this is a written conversation", just look for transcription errors where they may have meant to say another word.'
         },
         {
           role: 'user',
-          content: `Please analyze Person A's Spanish language skills in this conversation. Focus on grammar, pronunciation (based on spelling/transcription errors), terminology, and fluency. 
+          content: `Please analyze the learner's Spanish language skills in this conversation. The learner is Person A. Focus on grammar, pronunciation (based on spelling/transcription errors), terminology, and fluency. 
+
+Please phrase your feedback directly to the learner using "you" instead of "Person A".
 
 Full conversation for context:
 ${fullConversation}
 
 Provide your analysis in the following JSON format:
 {
-  "grammar": "detailed analysis of grammatical strengths and errors",
-  "pronunciation": "analysis of pronunciation based on transcription",
-  "terminology": "evaluation of vocabulary and terminology usage",
-  "fluency": "assessment of conversational flow and naturalness",
-  "overallFeedback": "summary of strengths and areas for improvement",
+  "grammar": "detailed analysis of grammatical strengths and errors, using 'you' to address the learner",
+  "pronunciation": "analysis of pronunciation based on transcription, using 'you' to address the learner",
+  "terminology": "evaluation of vocabulary and terminology usage, using 'you' to address the learner",
+  "fluency": "assessment of conversational flow and naturalness, using 'you' to address the learner",
+  "overallFeedback": "summary of strengths and areas for improvement, using 'you' to address the learner",
   "score": numeric score from 1-10
 }`
         }
       ],
-      temperature: 0.2,
-      response_format: { type: 'json_object' }
+      temperature: 0.2
     };
 
     console.log(`[OPENAI] Sending request to analyze language skills`);
@@ -120,16 +121,40 @@ Provide your analysis in the following JSON format:
     console.log(`[OPENAI] Response received in ${endTime - startTime}ms with status ${response.status}`);
     
     // Parse the JSON response
-    const analysis = JSON.parse(response.data.choices[0].message.content);
-    
-    return {
-      grammar: analysis.grammar,
-      pronunciation: analysis.pronunciation,
-      terminology: analysis.terminology,
-      fluency: analysis.fluency,
-      overallFeedback: analysis.overallFeedback,
-      score: analysis.score
-    };
+    try {
+      const analysisText = response.data.choices[0].message.content;
+      console.log(`[OPENAI] Received response: ${analysisText.substring(0, 100)}...`);
+      
+      // Extract JSON from the response, which might include markdown formatting
+      let jsonStr = analysisText;
+      if (analysisText.includes('```json')) {
+        jsonStr = analysisText.split('```json')[1].split('```')[0].trim();
+      } else if (analysisText.includes('```')) {
+        jsonStr = analysisText.split('```')[1].split('```')[0].trim();
+      }
+      
+      const analysis = JSON.parse(jsonStr);
+      
+      return {
+        grammar: analysis.grammar || 'No grammar analysis provided',
+        pronunciation: analysis.pronunciation || 'No pronunciation analysis provided',
+        terminology: analysis.terminology || 'No terminology analysis provided',
+        fluency: analysis.fluency || 'No fluency analysis provided',
+        overallFeedback: analysis.overallFeedback || 'No overall feedback provided',
+        score: analysis.score || 5
+      };
+    } catch (parseError) {
+      console.error(`[OPENAI ERROR] Failed to parse response: ${parseError}`);
+      return {
+        grammar: 'Error analyzing grammar',
+        pronunciation: 'Error analyzing pronunciation',
+        terminology: 'Error analyzing terminology',
+        fluency: 'Error analyzing fluency',
+        overallFeedback: 'There was an error analyzing the conversation',
+        score: 0,
+        error: `Failed to parse analysis: ${parseError}`
+      };
+    }
   } catch (error: any) {
     console.error(`[OPENAI ERROR] ${error.message}`);
     if (error.response) {

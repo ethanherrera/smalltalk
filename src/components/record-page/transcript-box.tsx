@@ -4,6 +4,7 @@ interface Message {
   speaker: string;
   text: string;
   isLive?: boolean;
+  displaySpeaker?: string;
 }
 
 interface TranscriptBoxProps {
@@ -46,7 +47,7 @@ const TranscriptBox: React.FC<TranscriptBoxProps> = ({
   return (
     <div className="w-full flex flex-col items-center mt-4">
       <div className="w-[90%] max-w-3xl">
-        <h2 className="text-xl font-semibold mb-3">Live Transcript</h2>
+        <h2 className="text-xl font-semibold mb-3">Transcript</h2>
         <div 
           ref={transcriptBoxRef}
           className="h-[60vh] overflow-y-auto border rounded-lg p-4 bg-muted/30"
@@ -69,7 +70,9 @@ const TranscriptBox: React.FC<TranscriptBoxProps> = ({
             {/* Show live messages with separate headers for each utterance */}
             {liveMessages.length > 0 && liveMessages.map((message, index) => (
               <div key={`live-${index}`} className="flex flex-col items-start">
-                <span className="font-medium text-primary">{message.speaker}:</span>
+                <span className="font-medium text-primary">
+                  {message.displaySpeaker || message.speaker}:
+                </span>
                 <p className="pl-0">
                   {message.text.split('\n').map((line, i) => (
                     <React.Fragment key={i}>
