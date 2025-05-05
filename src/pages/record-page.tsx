@@ -1,3 +1,4 @@
+// src/pages/record-page.tsx
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Mic, Square, RotateCcw, Send } from "lucide-react";
 import React, { useState, useEffect } from "react";
@@ -41,29 +42,23 @@ const RecordPage: React.FC = () => {
   const submit = () => navigate("/feedback");
 
   return (
-    <div className="flex flex-col gap-4 pb-32">
-      <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
+    <div className="flex flex-col min-h-screen">
+      <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2 px-4">
         <Button variant="ghost" size="icon" onClick={() => navigate("/home")}>
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-bold">Record Conversation</h1>
       </div>
 
-      <TranscriptBox />
-      <div className="flex justify-center mb-4">
-        <Button
-          variant="outline"
-          className="flex items-center gap-2 px-6 py-2 border-blue-500 text-blue-500 hover:bg-blue-50"
-          onClick={() => navigate("/practice")}
-        >
-          <span className="font-medium">Switch to Practice Mode</span>
-        </Button>
+      <div className="flex-1 overflow-auto p-4">
+        <TranscriptBox />
       </div>
-      <div className="flex flex-col gap-4">
+
+      <div className="fixed bottom-6 w-11/12 left-1/2 -translate-x-1/2 px-4 z-10">
         {!isRecording && !showControls && (
           <Button
             onClick={start}
-            className="w-full h-20 rounded-full bg-primary text-lg flex items-center justify-center gap-2"
+            className="w-full h-20 rounded-full bg-primary text-lg flex items-center justify-center gap-2 shadow-lg"
           >
             <Mic className="h-6 w-6" />
             Start Recording
@@ -113,4 +108,3 @@ const RecordPage: React.FC = () => {
 };
 
 export default RecordPage;
-
