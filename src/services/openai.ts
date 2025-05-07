@@ -10,7 +10,12 @@ export interface LanguageAnalysis {
   terminology: string;
   fluency: string;
   overallFeedback: string;
-  score: number; // 1-10 scale
+  scores: {
+    grammar: number;
+    pronunciation: number;
+    terminology: number;
+    fluency: number;
+  };
   error?: string;
 }
 
@@ -54,7 +59,12 @@ export const analyzeLanguageSkills = async (
       terminology: 'No data to analyze',
       fluency: 'No data to analyze',
       overallFeedback: 'No conversation data was provided',
-      score: 0,
+      scores: {
+        grammar: 0,
+        pronunciation: 0,
+        terminology: 0,
+        fluency: 0
+      },
       error: 'No conversation data was provided'
     };
   }
@@ -69,7 +79,12 @@ export const analyzeLanguageSkills = async (
         terminology: 'No data to analyze',
         fluency: 'No data to analyze',
         overallFeedback: 'No speech from Person A was found in the conversation',
-        score: 0,
+        scores: {
+          grammar: 0,
+          pronunciation: 0,
+          terminology: 0,
+          fluency: 0
+        },
         error: 'No speech from Person A was found'
       };
     }
@@ -100,7 +115,12 @@ Provide your analysis in the following JSON format:
   "terminology": "evaluation of vocabulary and terminology usage, using 'you' to address the learner",
   "fluency": "assessment of conversational flow and naturalness, using 'you' to address the learner",
   "overallFeedback": "summary of strengths and areas for improvement, using 'you' to address the learner",
-  "score": numeric score from 1-10
+  "scores": {
+    "grammar": numeric score from 1-10,
+    "pronunciation": numeric score from 1-10,
+    "terminology": numeric score from 1-10,
+    "fluency": numeric score from 1-10
+  }
 }`
         }
       ],
@@ -141,7 +161,12 @@ Provide your analysis in the following JSON format:
         terminology: analysis.terminology || 'No terminology analysis provided',
         fluency: analysis.fluency || 'No fluency analysis provided',
         overallFeedback: analysis.overallFeedback || 'No overall feedback provided',
-        score: analysis.score || 5
+        scores: analysis.scores || {
+          grammar: 5,
+          pronunciation: 5,
+          terminology: 5,
+          fluency: 5
+        }
       };
     } catch (parseError) {
       console.error(`[OPENAI ERROR] Failed to parse response: ${parseError}`);
@@ -151,7 +176,12 @@ Provide your analysis in the following JSON format:
         terminology: 'Error analyzing terminology',
         fluency: 'Error analyzing fluency',
         overallFeedback: 'There was an error analyzing the conversation',
-        score: 0,
+        scores: {
+          grammar: 0,
+          pronunciation: 0,
+          terminology: 0,
+          fluency: 0
+        },
         error: `Failed to parse analysis: ${parseError}`
       };
     }
@@ -168,7 +198,12 @@ Provide your analysis in the following JSON format:
       terminology: '',
       fluency: '',
       overallFeedback: '',
-      score: 0,
+      scores: {
+        grammar: 0,
+        pronunciation: 0,
+        terminology: 0,
+        fluency: 0
+      },
       error: error.message
     };
   }

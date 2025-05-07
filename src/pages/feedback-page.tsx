@@ -65,7 +65,7 @@ const FeedbackPage: React.FC = () => {
             <CardContent>
               {analysis ? (
                 <div className="flex items-end gap-2">
-                  <span className="text-4xl font-bold">{analysis.score}</span>
+                  <span className="text-4xl font-bold">{analysis.scores.pronunciation}</span>
                   <span className="text-sm text-muted-foreground">(out of 10)</span>
                 </div>
               ) : (
@@ -81,7 +81,7 @@ const FeedbackPage: React.FC = () => {
             <CardContent>
               {analysis ? (
                 <div className="flex items-end gap-2">
-                  <span className="text-4xl font-bold">{analysis.score}</span>
+                  <span className="text-4xl font-bold">{analysis.scores.grammar}</span>
                   <span className="text-sm text-muted-foreground">(out of 10)</span>
                 </div>
               ) : (
@@ -97,7 +97,7 @@ const FeedbackPage: React.FC = () => {
             <CardContent>
               {analysis ? (
                 <div className="flex items-end gap-2">
-                  <span className="text-4xl font-bold">{analysis.score}</span>
+                  <span className="text-4xl font-bold">{analysis.scores.terminology}</span>
                   <span className="text-sm text-muted-foreground">(out of 10)</span>
                 </div>
               ) : (
@@ -113,7 +113,7 @@ const FeedbackPage: React.FC = () => {
             <CardContent>
               {analysis ? (
                 <div className="flex items-end gap-2">
-                  <span className="text-4xl font-bold">{analysis.score}</span>
+                  <span className="text-4xl font-bold">{analysis.scores.fluency}</span>
                   <span className="text-sm text-muted-foreground">(out of 10)</span>
                 </div>
               ) : (
