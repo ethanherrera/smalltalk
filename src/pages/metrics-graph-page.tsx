@@ -42,7 +42,7 @@ const chartConfigs = {
   }
 } satisfies Record<string, ChartConfig>;
 
-const MectricsGraphPage: React.FC = (state) => {
+const MectricsGraphPage: React.FC = (state: any) => {
   const navigate = useNavigate();
 
   var config;

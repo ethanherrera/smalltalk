@@ -20,6 +20,7 @@ import {
 
 function App() {
   const location = useLocation();
+  const state = location.state ? location.state : "";
   return (
     <PastConversationsProvider>
       <Routes>
@@ -34,7 +35,7 @@ function App() {
         <Route path="/" element={<Navigate to="/home" replace />} />
         <Route
           path="/metrics-graph"
-          element={<MectricsGraphPage />}
+          element={<MectricsGraphPage state = {state} />}
         />
         <Route path="/practice" element={<PracticePage />} />
         <Route path="/grammar-feedback" element={<GrammarFeedbackPage />} />
