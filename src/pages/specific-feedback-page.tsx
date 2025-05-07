@@ -58,7 +58,7 @@ const SpecificFeedbackPage: React.FC = () => {
   };
   
   return (
-    <div className="flex flex-col gap-4 pb-32 p-10">
+    <div className="flex flex-col min-h-screen px-4">
       <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
         <Button 
           variant="ghost" 
@@ -72,21 +72,21 @@ const SpecificFeedbackPage: React.FC = () => {
       
       <div className="flex flex-col gap-4">
         <Card className="w-full">
-          <CardContent className="pt-6">
+          <CardContent className="text-left">
             <p className="text-sm whitespace-pre-line">{getFeedbackContent()}</p>
           </CardContent>
         </Card>
         
         <h2 className="text-xl font-semibold mt-4">Conversation</h2>
         <Card className="w-full">
-          <CardContent className="pt-6">
+          <CardContent className="text-left">
             <div className="flex flex-col gap-4">
               {conversation.map((message, index) => (
                 <div
                   key={index}
                   className={`p-3 rounded-lg ${
                     message.speaker === "Person A" 
-                      ? "bg-blue-200 ml-auto max-w-[80%] border border-blue-300" 
+                      ? "bg-purple-200 ml-auto max-w-[80%] border border-purple-300" 
                       : "bg-gray-200 mr-auto max-w-[80%] border border-gray-300"
                   }`}
                 >
