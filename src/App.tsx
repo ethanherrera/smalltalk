@@ -18,7 +18,7 @@ import {
 
 function App() {
   const location = useLocation();
-  const metric_type = location.state ? location.state.metric_type : "";
+  const state = location.state ? location.state : "";
   return (
     <Routes>
       <Route path="/home" element={<HomePage />} />
@@ -32,7 +32,7 @@ function App() {
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route
         path="/metrics-graph"
-        element={<MectricsGraphPage metric_type={metric_type} />}
+        element={<MectricsGraphPage state={state} />}
       />
       <Route path="/practice" element={<PracticePage />} />
       <Route path="/grammar-feedback" element={<GrammarFeedbackPage />} />

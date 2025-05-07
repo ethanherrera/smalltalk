@@ -36,6 +36,14 @@ export interface MetricCardProps {
   footerText?: string;
 }
 
+function sliceWithStep(array, start = 0, end = array.length, step = 1) {
+  const result = [];
+  for (let i = start; i < end; i += step) {
+    result.push(array[i]);
+  }
+  return result;
+}
+
 export function MetricCardCondensed({
   title,
   description,
@@ -53,7 +61,10 @@ export function MetricCardCondensed({
       <CardContent className="inline-block align-middle text-left flex justify-between">
         <div className="w-25"> {title} </div>
         <ChartContainer config={config} className="w-20 h-10">
-          <LineChart accessibilityLayer data={data}>
+          <LineChart
+            accessibilityLayer
+            data={sliceWithStep(data, 0, data.length, 80)}
+          >
             <Line
               dataKey={dataKey}
               type="monotone"
@@ -65,7 +76,7 @@ export function MetricCardCondensed({
             />
           </LineChart>
         </ChartContainer>
-        <div> {data[0][dataKey] + 100} </div>
+        <div> {data[data.length - 1][dataKey]} </div>
       </CardContent>
     </Card>
   );

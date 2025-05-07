@@ -33,28 +33,42 @@ const weeklyProgressData = [
 
 var data = [];
 
-
 // create fake data
 var data: Array<Record<string, any>> = [];
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
-var days = ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"]
+var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 var month_index = 1;
-for (var i = 0; i < 30; i++) {
+for (var i = 0; i < 365*3; i++) {
 
   if (i%30 == 0) {
     month_index++;
   }
 
-  var date = new Date(2025, 0);
+  var date = new Date(2023, 0);
   date = new Date(date.setDate(i));
+
+  if (i > 365*2) {
     data.push({ date: i,
-      month: months[month_index],
+                month: date.getMonth(),
+                day: date.getDate(),
+                year: date.getFullYear(),
+                datetime: date,
+                score: getRandomInt(90,100)/10, 
+                vocabulary: getRandomInt(90,100)/10, 
+                pronunciation: getRandomInt(90,100)/10, 
+                fluency: getRandomInt(90,100)/10})
+  }
+  else {
+    data.push({ date: i,
+      month: date.getMonth(),
       day: days[i%7], 
-      date2: date,
-      score: 5*Math.sqrt(i) - getRandomInt(0,10), 
-      vocabulary: 5*Math.sqrt(i) - getRandomInt(0,10), 
-      pronunciation: 5*Math.sqrt(i) - getRandomInt(0,10),  
-      fluency: 5*Math.sqrt(i) - getRandomInt(0,10)});
+      year: date.getFullYear(),
+      datetime: date,
+      score: (Math.sqrt(i) + getRandomInt(0,10))/10, 
+      vocabulary: (Math.sqrt(i) + getRandomInt(0,10))/10, 
+      pronunciation: (Math.sqrt(i) + getRandomInt(0,10))/10,  
+      fluency: (Math.sqrt(i) + getRandomInt(0,10))/10 });
+  }
 }
 
 const chartConfigs = {
@@ -87,8 +101,6 @@ const chartConfigs = {
 const PerformancePage: React.FC = () => {
   const navigate = useNavigate();
 
-  const [isVisible, setIsVisible] = useState(false);
-
   return (
     <div className="flex flex-col gap-4 pb-32">
       <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
@@ -114,7 +126,7 @@ const PerformancePage: React.FC = () => {
         xAxisKey="date"
         trendingValue="8.2%"
         trendingDirection="up"
-        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Grammer"} })}
+        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Grammar", metric_data: data} })}
       />
       <MetricCardCondensed 
         title="Vocabulary"
@@ -125,7 +137,7 @@ const PerformancePage: React.FC = () => {
         xAxisKey="date"
         trendingValue="11.4%"
         trendingDirection="up"
-        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Vocabulary"} })}
+        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Vocabulary", metric_data: data} })}
       />
       <MetricCardCondensed 
         title="Pronunciation"
@@ -136,7 +148,7 @@ const PerformancePage: React.FC = () => {
         xAxisKey="date"
         trendingValue="11.4%"
         trendingDirection="up"
-        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Pronunciation"} })}
+        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Pronunciation", metric_data: data} })}
       />
       <MetricCardCondensed 
         title="Fluency"
@@ -147,7 +159,7 @@ const PerformancePage: React.FC = () => {
         xAxisKey="date"
         trendingValue="11.4%"
         trendingDirection="up"
-        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Fluency"} })}
+        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Fluency", metric_data: data} })}
       />
     </div>
   );
