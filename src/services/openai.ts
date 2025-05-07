@@ -82,7 +82,7 @@ export const analyzeLanguageSkills = async (
       messages: [
         {
           role: 'system',
-          content: 'You are a language assessment specialist. Analyze the learner\'s Spanish language skills in the following conversation. The learner is Person A. Provide specific feedback addressing the learner directly using "you" instead of "Person A". Your analysis should be constructive, educational and personalized. YOU MUST RESPOND ONLY WITH VALID JSON. do not respond with "as this is a written conversation", just look for transcription errors where they may have meant to say another word. For proncunciation for example if they may have meant to say "hola" based on the context, but the transcript is "hoal", then this is a pronunciation error. DO NOT RESPOND WITH "as this is a written conversation", just look for transcription errors where they may have meant to say another word.'
+          content: 'You are a language assessment specialist. Analyze the learner\'s Spanish language skills in the following conversation. The learner is Person A. Provide specific feedback addressing the learner directly using "you" instead of "Person A". Your analysis should be constructive, educational and personalized. YOU MUST RESPOND ONLY WITH VALID JSON. For pronunciation analysis, focus on spelling and transcription errors that indicate pronunciation patterns. For example, if someone writes "hoal" instead of "hola", this suggests a pronunciation pattern that needs attention. DO NOT include any disclaimers about written conversations - focus purely on the linguistic analysis.'
         },
         {
           role: 'user',

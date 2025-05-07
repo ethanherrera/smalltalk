@@ -34,7 +34,6 @@ const RecordPage: React.FC = () => {
   const [liveMessages, setLiveMessages] = useState<Message[]>([]);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [error, setError] = useState('');
-  const [debug, setDebug] = useState('');
   const [hasAudioPermission, setHasAudioPermission] = useState<boolean | null>(null);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -245,18 +244,15 @@ const RecordPage: React.FC = () => {
         if (event.data && event.data.size > 0) {
           console.log(`Got audio chunk: ${event.data.size} bytes`);
           chunksRef.current.push(event.data);
-          setDebug(`Collected ${chunksRef.current.length} chunks`);
         }
       };
       
       recorder.onstart = () => {
         console.log('MediaRecorder started');
-        setDebug('Recording started');
       };
       
       recorder.onstop = () => {
         console.log('MediaRecorder stopped');
-        setDebug('Recording stopped');
       };
       
       recorder.onerror = (event) => {
@@ -296,7 +292,6 @@ const RecordPage: React.FC = () => {
     setTranscript('');
     setLiveMessages([]);
     setError('');
-    setDebug('');
     chunksRef.current = [];
     mockIndexRef.current = 0;
     
@@ -326,7 +321,6 @@ const RecordPage: React.FC = () => {
       try {
         // Set transcribing state to show loading indicator
         setIsTranscribing(true);
-        setDebug('Transcribing audio with AssemblyAI and analyzing language...');
         
         const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
         console.log('Processing audio with AssemblyAI, size:', audioBlob.size, 'bytes');
@@ -365,7 +359,6 @@ const RecordPage: React.FC = () => {
         setError(`Transcription error: ${errorMessage}`);
       } finally {
         setIsTranscribing(false);
-        setDebug('');
       }
     } else {
       setError('No audio recorded. Please try again.');
@@ -378,7 +371,6 @@ const RecordPage: React.FC = () => {
     setTranscript('');
     setLiveMessages([]);
     setError('');
-    setDebug('');
     chunksRef.current = [];
     mockIndexRef.current = 0;
   };
@@ -456,14 +448,6 @@ const RecordPage: React.FC = () => {
         <div className="px-4 mt-4">
           <div className="max-w-screen-md mx-auto p-3 border border-red-500 text-red-800 rounded-md">
             {error}
-          </div>
-        </div>
-      )}
-      
-      {debug && !isRecording && (
-       <div className="flex justify-center px-4 mt-4">
-          <div className="inline-block max-w-max whitespace-nowrap px-2 py-1 border border-green-500 bg-green-500/20 text-green-500 text-sm rounded-md">
-            Status: {debug}
           </div>
         </div>
       )}
