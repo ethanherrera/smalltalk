@@ -51,10 +51,10 @@ for (var i = 0; i < 30; i++) {
       month: months[month_index],
       day: days[i%7], 
       date2: date,
-      score: 5*Math.sqrt(i) - getRandomInt(0,10), 
-      vocabulary: 5*Math.sqrt(i) - getRandomInt(0,10), 
-      pronunciation: 5*Math.sqrt(i) - getRandomInt(0,10),  
-      fluency: 5*Math.sqrt(i) - getRandomInt(0,10)});
+      score: (5*Math.sqrt(i) - getRandomInt(0,10))/10, 
+      vocabulary: (5*Math.sqrt(i) - getRandomInt(0,10))/10, 
+      pronunciation: (5*Math.sqrt(i) - getRandomInt(0,10))/10,  
+      fluency: (5*Math.sqrt(i) - getRandomInt(0,10))/10});
 }
 
 const chartConfigs = {
@@ -114,7 +114,7 @@ const PerformancePage: React.FC = () => {
         xAxisKey="date"
         trendingValue="8.2%"
         trendingDirection="up"
-        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Grammer"} })}
+        onClick={() => navigate('/metrics-graph', { state: {metric_type: "Grammar"} })}
       />
       <MetricCardCondensed 
         title="Vocabulary"

@@ -224,7 +224,7 @@ export function MetricCard({
                 interval={0}
                 tick={false}
               />
-              <YAxis axisLine={false} tickLine={false} domain={[0, 100]} />
+              <YAxis axisLine={false} tickLine={false} domain={[0, 10]} />
               <Line
                 dataKey={dataKey}
                 type="monotone"

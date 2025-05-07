@@ -50,10 +50,10 @@ for (var i = 0; i < 365*3; i++) {
                 day: date.getDate(),
                 year: date.getFullYear(),
                 datetime: date,
-                score: getRandomInt(90,100), 
-                vocabulary: getRandomInt(90,100), 
-                pronunciation: getRandomInt(90,100), 
-                fluency: getRandomInt(90,100)})
+                score: getRandomInt(90,100)/10, 
+                vocabulary: getRandomInt(90,100)/10, 
+                pronunciation: getRandomInt(90,100)/10, 
+                fluency: getRandomInt(90,100)/10})
   }
   else {
     data.push({ date: i,
@@ -61,10 +61,10 @@ for (var i = 0; i < 365*3; i++) {
       day: days[i%7], 
       year: date.getFullYear(),
       datetime: date,
-      score: Math.sqrt(i) + getRandomInt(0,10), 
-      vocabulary: Math.sqrt(i) + getRandomInt(0,10), 
-      pronunciation: Math.sqrt(i) + getRandomInt(0,10),  
-      fluency: Math.sqrt(i) + getRandomInt(0,10) });
+      score: (Math.sqrt(i) + getRandomInt(0,10))/10, 
+      vocabulary: (Math.sqrt(i) + getRandomInt(0,10))/10, 
+      pronunciation: (Math.sqrt(i) + getRandomInt(0,10))/10,  
+      fluency: (Math.sqrt(i) + getRandomInt(0,10))/10 });
   }
 }
 
@@ -103,7 +103,7 @@ const MectricsGraphPage: React.FC = (metric_type) => {
   var dataKey;
   var type = metric_type.metric_type;
 
-  if (type == "Grammer") {
+  if (type == "Grammar") {
     config = chartConfigs.grammar;
     dataKey = "score";
   } else if (type == "Vocabulary") {

@@ -65,7 +65,7 @@ export function MetricCardCondensed({
             />
           </LineChart>
         </ChartContainer>
-        <div> {data[0][dataKey] + 100} </div>
+        <div> {data[0][dataKey] + 10} </div>
       </CardContent>
     </Card>
   );
