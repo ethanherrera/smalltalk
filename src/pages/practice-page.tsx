@@ -79,7 +79,7 @@ const PracticePage: React.FC = () => {
             variant="ghost"
             size="icon"
             onClick={() => navigate('/home')}
-            className="bg-black text-white hover:bg-gray-800 focus:outline-none"
+            className="light:text-black dark:text-white hover:bg-gray-800 focus:outline-none"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -87,7 +87,7 @@ const PracticePage: React.FC = () => {
         </div>
         <Button
           variant="outline"
-          className="text-sm bg-black text-white border-gray-700 hover:bg-gray-800"
+          className="text-sm light:text-black dark:text-white border-gray-700 hover:bg-gray-800"
           onClick={() => navigate('/feedback')}
         >
           View Feedback
@@ -116,7 +116,7 @@ const PracticePage: React.FC = () => {
       </div>
 
       {/* Progress bar */}
-      <div className="relative h-1.5 w-full bg-black">
+      <div className="relative h-1.5 w-full bg-gray-300">
         <div
           className="absolute h-full bg-gray-700 transition-all duration-300 ease-in-out"
           style={{
@@ -144,6 +144,7 @@ const PracticePage: React.FC = () => {
             showFeedback={showAnswer}
             onNext={handleNext}
             onPrev={handlePrev}
+            onClose={() => setShowAnswer(false)}
           />
         )}
       </div>
