@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-export function RecordConversation({ onClick, disabled = false }) {
+interface RecordConversationProps {
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
+export function RecordConversation({ onClick, disabled = false }: RecordConversationProps) {
   const navigate = useNavigate();
 
   return (
