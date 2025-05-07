@@ -27,7 +27,7 @@ const FeedbackPage: React.FC = () => {
   };
   
   return (
-    <div className="flex flex-col gap-4 pb-32 p-10">
+    <div className="flex flex-col space-y-8 pb-32 px-4 min-h-screen">
       <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
         <Button 
           variant="ghost" 
@@ -50,7 +50,7 @@ const FeedbackPage: React.FC = () => {
               <CardTitle>Overall Assessment</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{analysis.overallFeedback}</p>
+              <p className="text-sm text-left">{analysis.overallFeedback}</p>
             </CardContent>
           </Card>
         )}

@@ -428,14 +428,14 @@ const RecordPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 pb-32 p-10">
-      <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
+    <div className="flex flex-col min-h-screen">
+      <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2 px-4">
         <Button 
           variant="ghost" 
           size="icon"
           onClick={() => navigate('/home')}
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-bold">Record Conversation</h1>
       </div>
@@ -453,73 +453,79 @@ const RecordPage: React.FC = () => {
       />
       
       {error && (
-        <div className="p-3 bg-red-100 text-red-800 rounded-md">
-          {error}
+        <div className="px-4 mt-4">
+          <div className="max-w-screen-md mx-auto p-3 border border-red-500 text-red-800 rounded-md">
+            {error}
+          </div>
         </div>
       )}
       
       {debug && !isRecording && (
-        <div className="p-2 bg-gray-100 text-gray-700 text-sm rounded-md">
-          Status: {debug}
+       <div className="flex justify-center px-4 mt-4">
+          <div className="inline-block max-w-max whitespace-nowrap px-2 py-1 border border-green-500 bg-green-500/20 text-green-500 text-sm rounded-md">
+            Status: {debug}
+          </div>
         </div>
       )}
       
       {isTranscribing && (
-        <div className="p-3 bg-blue-100 text-blue-800 rounded-md">
-          Transcribing your conversation... Please wait.
+        <div className="px-4 mt-4">
+          <div className="max-w-screen-md mx-auto p-3 bg-blue-500/20 text-blue-800 rounded-md">
+            Transcribing your conversation... Please wait.
+          </div>
         </div>
       )}
       
-      <div className="flex flex-col gap-4">
-        {isRecording && (
-          <div className="flex items-center gap-4 p-4 border rounded-lg bg-muted/30">
-            <Button
-              variant="destructive"
-              size="icon"
-              className="h-10 w-10 rounded-full p-0"
-              onClick={handleStopRecording}
-            >
-              <Square className="h-5 w-5 text-white" />
-            </Button>
-            <div className="flex-1">
-              <AudioVisualizer isRecording={isRecording} />
-            </div>
-            <div className="text-lg font-medium text-destructive">
-              {formatTime(elapsedTime)}
-            </div>
-          </div>
-        )}
+      <div className="fixed bottom-6 w-11/12 left-1/2 -translate-x-1/2 px-4 z-10">
         {!isRecording && !showControls && (
-          <Button 
-            variant="destructive" 
+          <Button
             onClick={handleStartRecording}
-            className="flex items-center gap-2"
+            className="w-full h-20 rounded-full bg-primary text-lg flex items-center justify-center gap-2 shadow-lg"
           >
-            <Mic className="h-10 w-10" />
+            <Mic className="h-6 w-6" />
             Start Recording {USE_MOCK_TRANSCRIPTION ? '(Mock)' : ''}
           </Button>
         )}
+
+        {isRecording && (
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-20 rounded-lg overflow-hidden">
+              <AudioVisualizer isRecording={true} />
+            </div>
+            <div className="text-lg font-medium text-primary">
+              {formatTime(elapsedTime)}
+            </div>
+            <Button
+              onClick={handleStopRecording}
+              className="h-20 w-20 rounded-full bg-primary text-primary-foreground flex-shrink-0"
+            >
+              <Square className="h-6 w-6" />
+            </Button>
+          </div>
+        )}
+
         {showControls && !isTranscribing && (
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <Button 
               variant="outline" 
               onClick={handleTryAgain}
-              className="flex-1 flex items-center gap-2 ml-10"
+              className="flex-1 h-20 rounded-full flex items-center justify-center gap-2"
             >
-              <RotateCcw className="h-5 w-5" />
+              <RotateCcw className="h-6 w-6" />
               Try Again
             </Button>
-            <Button 
+            <Button
               variant="default"
               onClick={handleSubmit}
-              className="flex-1 flex items-center gap-2 mr-10"
+              className="flex-1 h-20 rounded-full flex items-center justify-center gap-2"
             >
-              <Send className="h-5 w-5" />
+              <Send className="h-6 w-6" />
               Submit
             </Button>
           </div>
         )}
       </div>
+
     </div>
   );
 };
