@@ -88,7 +88,7 @@ const PracticePage: React.FC = () => {
         <Button
           variant="outline"
           className="text-sm light:text-black dark:text-white border-gray-700 hover:bg-gray-800"
-          onClick={() => navigate('/feedback')}
+          onClick={() => setShowAnswer(true)}
         >
           View Feedback
         </Button>

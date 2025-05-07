@@ -25,14 +25,14 @@ const PastConversationPage: React.FC = () => {
 
   if (!conversation) {
     return (
-      <div className="flex flex-col gap-4 p-10">
+      <div className="flex flex-col gap-4 pb-32">
         <div className="flex items-center gap-2">
           <Button 
             variant="ghost" 
             size="icon"
             onClick={() => navigate('/home')}
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-6 w-6" />
           </Button>
           <h1 className="text-2xl font-bold">Conversation Not Found</h1>
         </div>
@@ -41,14 +41,14 @@ const PastConversationPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 pb-32 p-10">
+    <div className="flex flex-col gap-4 pb-32">
       <div className="sticky top-0 z-10 bg-background flex items-center gap-2 py-2">
         <Button 
           variant="ghost" 
           size="icon"
           onClick={() => navigate('/home')}
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-6 w-6" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold">{conversation.title}</h1>
