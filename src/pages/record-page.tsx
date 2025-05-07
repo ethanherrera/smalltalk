@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import TranscriptBox from '@/components/record-page/transcript-box';
 import AudioVisualizer from '@/components/record-page/audio-visualizer';
 import { transcribeAndAnalyzeLanguage } from '@/services/assemblyai';
+import { usePastConversations } from '@/contexts/PastConversationsContext';
 
 // Define the Message interface for consistency with TranscriptBox
 interface Message {
@@ -25,6 +26,7 @@ const USE_MOCK_TRANSCRIPTION = false; // Set to true for testing UI, false for r
 
 const RecordPage: React.FC = () => {
   const navigate = useNavigate();
+  const { pastConversations, setPastConversations } = usePastConversations();
   const [isRecording, setIsRecording] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showControls, setShowControls] = useState(false);
@@ -381,8 +383,35 @@ const RecordPage: React.FC = () => {
     mockIndexRef.current = 0;
   };
 
+  const createConversationTitle = (messages: Message[]): string => {
+    // Combine all messages into one string and get first 3 words
+    const fullText = messages.map(msg => msg.text).join(' ');
+    const words = fullText.trim().split(/\s+/);
+    return words.slice(0, 3).join(' ') + '...';
+  };
+
+  const countSentences = (messages: Message[]): number => {
+    const fullText = messages.map(msg => msg.text).join(' ');
+    // Count periods that are followed by a space or end of string
+    return (fullText.match(/\.\s|\.$|!\s|!$|\?\s|\?$/g) || []).length;
+  };
+
   const handleSubmit = () => {
-    // Navigate directly to feedback without clearing or changing the transcript
+    if (liveMessages.length > 0) {
+      const newConversation = {
+        title: createConversationTitle(liveMessages),
+        time: Math.floor(Math.random() * 20) + 5, // Random time between 5-25 minutes
+        concepts: Math.floor(Math.random() * 15) + 5, // Random concepts between 5-20
+        lines: countSentences(liveMessages),
+        date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+        transcript: liveMessages.map(msg => `${msg.speaker === "Person A" ? "You" : msg.speaker}: ${msg.text}`).join('\n')
+      };
+
+      // Add the new conversation to the beginning of the list
+      setPastConversations([newConversation, ...pastConversations]);
+    }
+
+    // Navigate to feedback page
     navigate('/feedback');
   };
 
@@ -470,7 +499,7 @@ const RecordPage: React.FC = () => {
             Start Recording {USE_MOCK_TRANSCRIPTION ? '(Mock)' : ''}
           </Button>
         )}
-        {showControls && (
+        {showControls && !isTranscribing && (
           <div className="flex gap-4">
             <Button 
               variant="outline" 
